@@ -5,7 +5,7 @@ project/import/path` before running homebrew-go-resources. It works
 for 'hg' and 'git' repositories.
 
 ```
-Usage of /home/samer/bin/homebrew-go-resources:
+Usage of homebrew-go-resources:
 	homebrew-go-resources [flags] [path]
 Flags:
   -debug=false: show debug messages
