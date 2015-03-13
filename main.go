@@ -13,10 +13,6 @@ import (
 	"text/template"
 )
 
-// notes:
-// Get all the imports with "go list -e -json"
-// Does not work with Godeps/gom
-
 var debugOpt bool
 
 func init() {
@@ -222,7 +218,8 @@ func main() {
 var templateString = `
 {{range .}}
   go_resource "{{.ImportPath}}" do
-    url "{{.ClonePath}}", :revision => "{{.Revision}}"{{if .VCS}}, :using => :{{.VCS}}{{end}}
+    url "{{.ClonePath}}",
+        :revision => "{{.Revision}}"{{if .VCS}}, :using => :{{.VCS}}{{end}}
   end
 {{end}}
 `
