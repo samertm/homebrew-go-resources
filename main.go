@@ -38,7 +38,7 @@ func dLog(v ...interface{}) {
 
 func usage() {
 	msg := `Usage of homebrew-go-resources:
-        homebrew-go-stringer [flags] [path]
+        homebrew-go-resources [flags] [path]
 
 homebrew-go-resources generates "go_resource" statements for homebrew
 formulas. It generates "go_resource" statements for the currently
