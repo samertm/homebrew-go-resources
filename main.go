@@ -198,6 +198,11 @@ func main() {
 		if i.VCS == "" {
 			log.Fatalf("Could not find vcs for %s. If this is unexpected, please file a bug report. %+v", i.ImportPath, i)
 		}
+		// As a special case, add ".git" to the end of git remotes.
+		// Fixes https://github.com/samertm/homebrew-go-resources/issues/1.
+		if i.VCS == "git" && !strings.HasSuffix(i.ClonePath, ".git") {
+			i.ClonePath += ".git"
+		}
 		if strings.HasSuffix(i.ClonePath, "."+i.VCS) {
 			i.VCS = ""
 		}
