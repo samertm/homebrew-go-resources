@@ -7,10 +7,10 @@ Before running this tool, you should fetch the projet by either
 running `go get -u project/import/path` (to fetch the latest version)
 or, to fetch a specific release:
 
-* git clone https://url/to/project src/project/import/path
-* cd src/project/import/path
-* git checkout tag # for example, v1.0.0
-* go get -d
+* `git clone https://url/to/project src/project/import/path`
+* `cd src/project/import/path`
+* `git checkout tag # for example, v1.0.0`
+* `go get -d`
 
 
 ```
