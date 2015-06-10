@@ -5,7 +5,7 @@ It works for 'hg' and 'git' repositories.
 
 ### Generate go_resource statements
 
-Before running this tool, you should fetch the projet by either
+Before running this tool, you should fetch the project by either
 running `go get -u project/import/path` (to fetch the latest version)
 or, to fetch a specific release:
 
