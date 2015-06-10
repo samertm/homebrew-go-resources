@@ -224,7 +224,7 @@ var templateString = `
 {{range .}}
   go_resource "{{.ImportPath}}" do
     url "{{.ClonePath}}",
-        :revision => "{{.Revision}}"{{if .VCS}}, :using => :{{.VCS}}{{end}}
+      :revision => "{{.Revision}}"{{if .VCS}}, :using => :{{.VCS}}{{end}}
   end
 {{end}}
 `
