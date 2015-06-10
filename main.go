@@ -42,9 +42,8 @@ func usage() {
 
 homebrew-go-resources generates "go_resource" statements for homebrew
 formulas. It generates "go_resource" statements for the currently
-checked out repos for your project. You should run "go get -u
-project/import/path" before running homebrew-go-resources. It works
-for 'hg' and 'git' repositories.
+checked out repos for your project. It works for 'hg' and 'git'
+repositories.
 
 Flags:`
 	fmt.Fprintf(os.Stderr, msg)
