@@ -112,14 +112,15 @@ func main() {
 			dLog("In Goroot, continuing...")
 			continue
 		}
+		dLogf("Go found package source in '%s'", pkg.Dir)
 		// Try to find Git repository first.
 		cmd := exec.Command("git", "rev-parse", "--show-toplevel")
-		cmd.Dir = filepath.Join(build.Default.GOPATH, "src", pkg.ImportPath)
+		cmd.Dir = pkg.Dir
 		out, err := cmd.Output()
 		if err != nil {
 			// If Git fails, try Mercurial.
 			cmd := exec.Command("hg", "root")
-			cmd.Dir = filepath.Join(build.Default.GOPATH, "src", pkg.ImportPath)
+			cmd.Dir = pkg.Dir
 			o, err := cmd.Output()
 			if err != nil {
 				log.Fatalf("Could not find 'git' or 'hg' repo for %s", dep)
@@ -129,7 +130,7 @@ func main() {
 		dir := strings.TrimSuffix(string(out), "\n")
 		dLogf("Operating on top level dir '%s'", dir)
 		var i vcsInfo
-		p, err := filepath.Rel(filepath.Join(build.Default.GOPATH, "src"), dir)
+		p, err := filepath.Rel(pkg.SrcRoot, dir)
 		if err != nil {
 			log.Fatal(err)
 		}
