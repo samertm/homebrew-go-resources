@@ -1,2 +1,2 @@
-# Ignore our binary
 homebrew-go-resources
+*.test

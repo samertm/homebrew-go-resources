@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"go/build"
 	"log"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 )
@@ -152,12 +154,13 @@ func main() {
 			for _, line := range strings.Split(string(out), "\n") {
 				if strings.HasPrefix(line, "origin") {
 					clone := strings.Fields(line)[1]
-					if index := strings.Index(clone, "@"); index != -1 {
-						clone = "https://" + clone[index+1:]
-						clone = strings.Replace(clone, ":", "/", 1)
+					var err error
+					i.ClonePath, err = normalizeClonePath(clone)
+					if err != nil {
+						log.Fatalf("Error normalizing clone path %q for %s: %s. Please file a bug report.", clone, i.ImportPath, err)
 					}
-					i.ClonePath = clone
 				}
+
 			}
 			if i.ClonePath == "" {
 				log.Fatalf("Could not find a clone path for %s. Please file a bug report", i.ImportPath)
@@ -179,13 +182,9 @@ func main() {
 				log.Fatal(err)
 			}
 			clone := strings.TrimSuffix(string(out), "\n")
-			if index := strings.Index(clone, "@"); index != -1 {
-				clone = "https://" + clone[index+1:]
-				clone = strings.Replace(clone, ":", "/", 1)
-			}
-			i.ClonePath = clone
-			if i.ClonePath == "" {
-				log.Fatalf("Could not find a clone path for %s. Please file a bug report", i.ImportPath)
+			i.ClonePath, err = normalizeClonePath(clone)
+			if err != nil {
+				log.Fatalf("Error normalizing clone path %q for %s: %s. Please file a bug report.", clone, i.ImportPath, err)
 			}
 			cmd = exec.Command("hg", "identify", "--debug", "-i")
 			cmd.Dir = dir
@@ -230,3 +229,34 @@ var templateString = `
 `
 
 var templateOut = template.Must(template.New("out").Parse(templateString))
+
+// scpSyntaxRe matches the SCP-like addresses used by Git to access
+// repositories by SSH.
+// From https://github.com/golang/go/blob/5fea2ccc77eb50a9704fa04b7c61755fe34e1d95/src/cmd/go/vcs.go#L149.
+var scpSyntaxRe = regexp.MustCompile(`^([a-zA-Z0-9_]+)@([a-zA-Z0-9._-]+):(.*)$`)
+
+// Normalize clone path (url or ssh) to URL.
+func normalizeClonePath(clone string) (normalizedCloneURL string, err error) {
+	clone = strings.TrimSpace(clone)
+	var repoURL *url.URL
+	if m := scpSyntaxRe.FindStringSubmatch(clone); m != nil {
+		repoURL = &url.URL{
+			Scheme: "ssh",
+			User:   url.User(m[1]),
+			Host:   m[2],
+			Path:   m[3],
+		}
+	} else {
+		repoURL, err = url.Parse(clone)
+		if err != nil {
+			return "", err
+		}
+	}
+	normalizedURL := &url.URL{
+		Scheme: "https", // Assume HTTPS is always available.
+		Host:   repoURL.Host,
+		Path:   repoURL.EscapedPath(),
+	}
+
+	return normalizedURL.String(), nil
+}
