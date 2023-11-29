@@ -35,5 +35,5 @@ Flags:
 ### Install
 
 ```
-go get github.com/samertm/homebrew-go-resources
+go install github.com/samertm/homebrew-go-resources@latest
 ```
